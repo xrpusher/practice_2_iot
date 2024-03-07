@@ -80,13 +80,15 @@ void button_handler(void *arg) {
 
     if (myInt == expected){
         gpio_clear(led_pin);
+        printf("код верный\n");   
     }else{
         gpio_set(led_pin);
         if (a == 3){
             setBits(&myInt, 0, 5); // Устанавливаем 001 в позиции 0
             setBits(&myInt, 1, 5); // Устанавливаем 100 в позиции 1
             setBits(&myInt, 2, 5); // Устанавливаем 101 в позиции 2
-            setBits(&myInt, 3, 5); // Устанавливаем 101 в позиции 2     
+            setBits(&myInt, 3, 5); // Устанавливаем 101 в позиции 2  
+            printf("код неверный\n");      
         }
     }
 
@@ -101,13 +103,15 @@ void button_handler_2(void *arg) {
 
     if (myInt == expected){
         gpio_clear(led_pin);
+        printf("код верный\n");   
     }else{
         gpio_set(led_pin);
         if (a == 3){
             setBits(&myInt, 0, 5); // Устанавливаем 001 в позиции 0
             setBits(&myInt, 1, 5); // Устанавливаем 100 в позиции 1
             setBits(&myInt, 2, 5); // Устанавливаем 101 в позиции 2
-            setBits(&myInt, 3, 5); // Устанавливаем 101 в позиции 2     
+            setBits(&myInt, 3, 5); // Устанавливаем 101 в позиции 2 
+            printf("код неверный\n");       
         }
     }
     gpio_irq_disable(button_pin_2);
@@ -120,13 +124,15 @@ void button_handler_3(void *arg) {
     setBits(&myInt, a, 2);
     if (myInt == expected){
         gpio_clear(led_pin);
+        printf("код верный\n");   
     }else{
         gpio_set(led_pin);
         if (a == 3){
             setBits(&myInt, 0, 5); // Устанавливаем 001 в позиции 0
             setBits(&myInt, 1, 5); // Устанавливаем 100 в позиции 1
             setBits(&myInt, 2, 5); // Устанавливаем 101 в позиции 2
-            setBits(&myInt, 3, 5); // Устанавливаем 101 в позиции 2     
+            setBits(&myInt, 3, 5); // Устанавливаем 101 в позиции 2 
+            printf("код неверный\n");       
         }
     }
     gpio_irq_disable(button_pin_3);
@@ -142,13 +148,15 @@ void button_handler_4(void *arg) {
 
     if (myInt == expected){
         gpio_clear(led_pin);
+        printf("код верный\n");   
     }else {
         gpio_set(led_pin);
         if (a == 3){
             setBits(&myInt, 0, 5); // Устанавливаем 001 в позиции 0
             setBits(&myInt, 1, 5); // Устанавливаем 100 в позиции 1
             setBits(&myInt, 2, 5); // Устанавливаем 101 в позиции 2
-            setBits(&myInt, 3, 5); // Устанавливаем 101 в позиции 2     
+            setBits(&myInt, 3, 5); // Устанавливаем 101 в позиции 2  
+            printf("код неверный\n");      
         }
 
     }
