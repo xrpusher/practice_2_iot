@@ -8,7 +8,7 @@
 #define LONG_PRESS 3000000 
 
 static gpio_t led_pin = GPIO_PIN(PORT_C, 13);
-static gpio_t button_pins[NUM_BUTTONS] = {GPIO_PIN(PORT_B, 0), GPIO_PIN(PORT_B, 1), GPIO_PIN(PORT_B, 2), GPIO_PIN(PORT_B, 3)};
+static gpio_t button_pins[NUM_BUTTONS] = {GPIO_PIN(PORT_B, 5), GPIO_PIN(PORT_B, 1), GPIO_PIN(PORT_B, 15), GPIO_PIN(PORT_B, 12)};
 static uint32_t correct_code[CODE_LENGTH] = {0, 1, 2, 3}; // Пример правильного кода
 static uint32_t entered_code[CODE_LENGTH];
 static int code_index = 0;
