@@ -67,7 +67,6 @@ int main(void) {
     led_timer.callback = toggle_led;
 
     while (1) {
-        xtimer_sleep(1);  // Ждем события
     }
     return 0;
 }
