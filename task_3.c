@@ -3,15 +3,17 @@
 #include "xtimer.h"
 
 #define DEBOUNCE_DELAY 300000   // Задержка для антидребезга
-#define LONG_PRESS 30000      // Время для определения долгого нажатия
+#define LONG_PRESS 300000       // Время для определения долгого нажатия
 
 // Определение пинов для светодиодов
-static gpio_t red_led_pin = GPIO_PIN(PORT_C, 13);
+static gpio_t green_led_pin = GPIO_PIN(PORT_C, 13);//green
 static gpio_t yellow_led_pin = GPIO_PIN(PORT_B, 14);
-static gpio_t green_led_pin = GPIO_PIN(PORT_B, 7);
+static gpio_t red_led_pin = GPIO_PIN(PORT_B, 7);
 
 // Определение пина для кнопки
 static gpio_t button_pin = GPIO_PIN(PORT_B, 11);
+
+static bool led_timer_active = true; // Добавляем флаг активности таймера
 
 // Таймеры
 static xtimer_t debounce_timer;
@@ -21,28 +23,33 @@ static xtimer_t led_timer;
 static uint32_t last_green_time = 0;
 static uint32_t current_phase_time = 5000000; // 5 секунд для каждой фазы
 
-enum { RED, YELLOW, GREEN } current_light = RED;
+enum { RED, YELLOW, GREEN } current_light = GREEN;
 
 void toggle_leds(void)  {
+    if (!led_timer_active) {
+        return; // Не выполняем переключение, если таймер неактивен
+    }
     switch (current_light) {
         case RED:
-            gpio_clear(red_led_pin);
-            gpio_clear(yellow_led_pin);
-            gpio_clear(green_led_pin);
-            current_light = GREEN;
-
-            break;
-        case GREEN:
             gpio_set(red_led_pin);
             gpio_clear(yellow_led_pin);
             gpio_set(green_led_pin);
-            last_green_time = xtimer_now_usec(); 
             current_light = YELLOW;
+
             break;
+        
         case YELLOW:
-            gpio_set(red_led_pin);
+            gpio_clear(red_led_pin);
             gpio_set(yellow_led_pin);
+            gpio_set(green_led_pin);
+            current_light = GREEN;
+            break;
+        case GREEN:
+            gpio_clear(red_led_pin);
+            gpio_clear(yellow_led_pin);
             gpio_clear(green_led_pin);
+            // новое время - зеленого цвета
+            last_green_time = xtimer_now_usec(); 
             current_light = RED;
             break;
     }
@@ -53,23 +60,27 @@ void debounce_callback(void *arg) {
     (void)arg;
     gpio_irq_enable(button_pin);
 }
-
+uint32_t time_since_green;
 
 void button_handler(void *arg) {
     (void)arg;
-    uint32_t now = xtimer_now_usec();
-    uint32_t time_since_green;
+    uint32_t now = xtimer_now_usec(); 
 
-    if (last_green_time > now) { // Учет переполнения таймера
+    // Учет переполнения таймера
+    if (last_green_time > now) { 
         time_since_green = (UINT32_MAX - last_green_time) + now;
     } else {
         time_since_green = now - last_green_time;
     }
 
-    if (current_light != GREEN && time_since_green + LONG_PRESS < current_phase_time) {
-        // Ускоряем переключение на зеленый свет
-        xtimer_set(&led_timer, LONG_PRESS);
-    }
+  if ((current_light != RED) && ((time_since_green >= 7000000)&& (time_since_green <= 9000000))) {
+        xtimer_remove(&led_timer); // Удаляем текущий таймер
+        led_timer_active = false;  // Устанавливаем флаг таймера в неактивное состояние
+        current_light = GREEN;     // Устанавливаем зеленый свет
+        toggle_leds();   
+        led_timer_active = true;           // Мгновенно переключаем на зеленый свет
+        xtimer_set(&led_timer, LONG_PRESS); // Устанавливаем новый таймер
+   }
 
     gpio_irq_disable(button_pin);
     xtimer_set(&debounce_timer, DEBOUNCE_DELAY);
@@ -90,7 +101,7 @@ int main(void) {
     // Настройка таймеров
     debounce_timer.callback = debounce_callback;
     led_timer.callback = (void (*)(void *))toggle_leds;
-
+    current_light = GREEN; 
     // Начальное состояние светофора
     toggle_leds();
 
