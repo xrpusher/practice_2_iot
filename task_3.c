@@ -106,7 +106,7 @@ int main(void) {
     toggle_leds();
 
     while (1) {
-        xtimer_sleep(1);
+        
     }
 
     return 0;
