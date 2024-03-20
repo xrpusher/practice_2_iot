@@ -9,7 +9,7 @@
 #define PWM_RESOLUTION 255             // Разрешение ШИМ (8 бит)
 #define PWM_PERIOD_US (1000000 / PWM_FREQUENCY) // Период ШИМ в микросекундах
 #define MIN_DUTY_CYCLE 100             // Минимальный duty cycle в микросекундах
-#define ADC_RESOLUTION ADC_RES_10BIT   // Разрешение АЦП
+#define ADC_RESOLUTION ADC_RES_12BIT   // Разрешение АЦП
 #define FILTER_SIZE 10                 // Размер фильтра для сглаживания
 
 static xtimer_t timer_on;
@@ -99,6 +99,7 @@ int main(void) {
     // Инициализация ADC
     if (adc_init(ADC_PIN) < 0) {
         printf("Ошибка инициализации ADC\n");
+        gpio_clear(led_pin);
         return 1;
     }
 
